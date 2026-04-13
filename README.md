@@ -11,7 +11,7 @@ Este repositorio tiene como objetivo documentar la arquitectura técnica, el dis
 YoVerifico utiliza una arquitectura distribuida para garantizar la separación de responsabilidades, seguridad y escalabilidad.
 
 ### Diagrama de Infraestructura
-![Arquitectura de YoVerifico](https://raw.githubusercontent.com/JAntonioGL/yoverifico-showcase/main/arquitectura.png)
+![Arquitectura de YoVerifico](https://raw.githubusercontent.com/JAntonioGL/yoverifico-showcase/main/assets/arquitectura.png)
 
 ---
 
