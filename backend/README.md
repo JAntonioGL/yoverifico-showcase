@@ -5,7 +5,6 @@ Esta carpeta contiene la documentación y especificación técnica del servidor 
 ## Diagrama de Flujo de Petición
 
 ![Flujo de Petición del Backend de YoVerifico](https://raw.githubusercontent.com/JAntonioGL/yoverifico-showcase/main/assets/arquitectura-backend.png)
-*(Sube tu imagen a la carpeta assets o raíz y asegúrate de que el nombre coincida aquí)*
 
 ---
 
