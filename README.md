@@ -12,7 +12,6 @@ YoVerifico utiliza una arquitectura distribuida para garantizar la separación d
 
 ### Diagrama de Infraestructura
 ![Arquitectura de YoVerifico](https://raw.githubusercontent.com/JAntonioGL/yoverifico-showcase/main/arquitectura.png)
-*(Sube tu imagen a la carpeta raíz del repo y asegúrate de que el nombre coincida aquí)*
 
 ---
 
