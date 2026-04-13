@@ -1,54 +1,55 @@
-#  Backend - Node.js API Service
+# 🚀 Backend - Node.js API Service (YoVerifico)
 
-Esta carpeta contiene la documentación y especificación técnica del servidor de **YoVerifico**. El backend está diseñado bajo una arquitectura de microservicios, utilizando contenedores para garantizar un despliegue consistente y escalable.
+Esta carpeta contiene la documentación y especificación técnica del núcleo de servicios de **YoVerifico**. El backend está diseñado bajo una arquitectura de microservicios y contenedores, priorizando la seguridad, la observabilidad y la integridad de los datos en un entorno distribuido de alta disponibilidad.
 
-## Diagrama de Flujo de Petición
+## 🗺️ Diagrama de Flujo de Petición
+El sistema implementa una arquitectura de **Defensa en Profundidad**, donde cada petición atraviesa múltiples capas de validación y seguridad antes de interactuar con la lógica de negocio.
 
 ![Flujo de Petición del Backend de YoVerifico](https://raw.githubusercontent.com/JAntonioGL/yoverifico-showcase/main/assets/arquitectura-backend.png)
 
 ---
 
-##  Arquitectura y Estructura
-El servidor está desarrollado con **Node.js** y **Express**, siguiendo un patrón modular que separa las responsabilidades en capas claras:
+## 🏗️ Arquitectura y Estructura Modular
+El servidor está desarrollado con **Node.js** y **Express**, siguiendo un patrón de diseño desacoplado que separa las responsabilidades en capas claras:
 
-* **`/routes`**: Definición de puntos de entrada (Endpoints). Segmentado por recursos (Auth, Vehículos, Notificaciones, Planes).
-* **`/controllers`**: Orquestación de la lógica de negocio.
-* **`/middlewares`**: Capa de seguridad y validación (Auth JWT, RBAC, Rate Limiting).
-* **`/services`**: Integraciones externas (Azure Mailer, Firebase Admin SDK).
-* **`/config`**: Gestión de variables de entorno y configuraciones de servicios (Ads, DB).
-
----
-
-## Containerización y DevOps
-
-Para garantizar la estabilidad en producción, el sistema utiliza una estrategia de containerización avanzada:
-
-### Docker Optimization
-* **Multi-stage Builds**: El `Dockerfile` utiliza una etapa de `deps` para instalar dependencias de producción y una etapa de `runtime` ligera basada en **Alpine Linux** para minimizar la superficie de ataque y el tamaño de la imagen.
-* **Security**: El contenedor se ejecuta bajo un usuario no-root (`app`) para seguir el principio de menor privilegio.
-
-### Process Management
-En el entorno de producción, se utiliza **PM2 (Runtime Mode)** configurado en modo clúster.
-* **Alta Disponibilidad**: El servidor levanta múltiples workers (instancias) para aprovechar todos los núcleos de la CPU del VPS.
-* **Auto-healing**: PM2 reinicia automáticamente cualquier instancia que falle.
+* **`/routes`**: Definición de contratos de la API segmentados por recursos (Auth, Vehículos, Planes, Ads).
+* **`/controllers`**: Orquestación de la lógica de negocio y gestión de flujos asíncronos complejos.
+* **`/middlewares`**: Capas de interceptación para seguridad (Helmet, CORS), validación de esquemas (express-validator) y gestión de privilegios.
+* **`/services`**: Abstracción de integraciones externas como Azure Communication Services para OTP y Firebase Admin SDK para notificaciones push.
+* **`/config`**: Centralización de variables de entorno y lógica de arranque bajo el estándar *Twelve-Factor App*.
 
 ---
 
-##  Estrategia de Seguridad y Resiliencia
+## 🔑 Gestión de Identidad y Sesiones
+Se implementó un sistema de autenticación híbrido (Local con Bcrypt + Google OAuth2) con una gestión de sesiones de nivel empresarial:
 
-1.  **Rate Limiting Dinámico**: Implementación de límites de peticiones basados en IP y cuenta de usuario mediante **Redis**. Se aplican reglas estrictas para procesos sensibles como la generación de OTP y el borrado de cuentas.
-2.  **Validación de Integridad**: El sistema incluye validaciones de **Server Side Verification (SSV)** para integraciones de publicidad (AdMob) y webhooks, previniendo fraudes.
-3.  **Observabilidad**: El servidor incluye un módulo de diagnóstico en el arranque que verifica permisos de carpetas críticas (ej. subida de logs de bugs) y muestra una tabla de configuración activa para facilitar el mantenimiento.
-
----
-
-##  Despliegue (Orquestación)
-
-El despliegue se gestiona mediante **Docker Compose**, manteniendo entornos aislados:
-
-* **Producción (`docker-compose.prod.yml`)**: Configura el reinicio automático (`unless-stopped`), gestión de logs con rotación automática (máximo 30MB) para prevenir el llenado del disco en el VPS, y redes privadas para la comunicación con Redis.
-* **Desarrollo (`docker-compose.dev.yml`)**: Configura volúmenes para *hot-reload* y levanta una instancia local de **PostgreSQL 17** para pruebas de integración.
+* **Refresh Token Rotation**: Uso de tokens de acceso de corta duración y tokens de refresco con rotación obligatoria para mitigar el secuestro de sesiones.
+* **Absolute Lifetime Control**: Implementación de tiempos de vida absolutos para sesiones persistentes, gestionados mediante lógica procedimental en PostgreSQL para forzar re-autenticación en periodos prolongados.
+* **Tickets Stateless (OTP)**: Emisión de JWTs de un solo propósito (audiencia `signup`) para garantizar la integridad del flujo de registro post-verificación sin sobrecargar la persistencia temporal.
 
 ---
 
-> **Tecnologías Clave:** Node.js, Docker, Redis, PM2, Firebase Admin, Azure Mail Service.
+## 🛡️ Seguridad y Resiliencia
+* **Rate Limiting Quirúrgico**: Diferenciación de límites entre endpoints públicos (protección agresiva contra fuerza bruta en OTP/Login) y endpoints privados (cuotas dinámicas por identidad de usuario) mediante **Redis**.
+* **Entitlements Injection**: Inyección dinámica de privilegios (Plan, límites de flota, estado de anuncios) desde el middleware de identidad para optimizar el rendimiento y evitar consultas redundantes a la base de datos.
+* **Server Side Verification (SSV)**: Validación de recompensas por publicidad mediante webhooks seguros coordinados con Google AdMob, evitando el fraude por manipulación del cliente.
+* **Hardening**: Protección de cabeceras vía Helmet, validación estricta de `Host Headers` y manejo de desincronización de relojes (`clockTolerance`) para firmas criptográficas.
+
+---
+
+## 🐳 Containerización y DevOps
+El sistema está optimizado para despliegues modernos mediante una infraestructura de contenedores:
+
+* **Docker Multi-stage Builds**: Separación de dependencias de construcción y runtime (basado en **node:20-alpine**) para reducir la superficie de ataque y optimizar el peso de las imágenes.
+* **PM2 Cluster Mode**: Gestión de procesos en modo clúster para aprovechar la arquitectura multi-core del servidor y garantizar el *auto-healing* y reinicio automático.
+* **Orquestación de Entornos**: Configuración de redes privadas internas para la comunicación con Redis y persistencia de logs con rotación automática (max 30MB) para prevenir el agotamiento de recursos en el host.
+
+---
+
+## 🗄️ Persistencia e Integridad
+* **Transacciones ACID**: Uso de transacciones SQL (`BEGIN/COMMIT/ROLLBACK`) en operaciones críticas para asegurar la consistencia atómica de los datos.
+* **Lógica en Capa de Datos**: Delegación de reglas de negocio complejas a procedimientos almacenados y vistas indexadas en **PostgreSQL 17**, reduciendo la latencia de red y centralizando la seguridad en la capa de persistencia.
+
+---
+
+> **Tecnologías Clave:** Node.js (v20), Docker, Redis, PM2, PostgreSQL 17, Google OAuth, Azure Communications Service, Firebase Admin SDK.
