@@ -1,0 +1,27 @@
+services:
+  api:
+    image: yoverifico/api:prod
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    environment:
+      NODE_ENV: production
+      REDIS_URL: "redis://default:${REDIS_PASS}@redis:6379/0"
+      BUG_UPLOAD_DIR: "/data/bug-uploads" # 👈 IMPORTANTE
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test: [ "CMD-SHELL", "node -e \"process.exit(0)\"" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - "/srv/bug-uploads:/data/bug-uploads:rw" # bind host→contenedor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m" # Cada archivo máximo 10MB
+        max-file: "3" # Mantiene solo 3 archivos (30MB total)
+  redis:
+    env_file:
+      - .env.prod

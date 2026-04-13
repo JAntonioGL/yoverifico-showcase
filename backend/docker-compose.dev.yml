@@ -1,0 +1,42 @@
+services:
+  # 1. Ajustes para tu API en modo DEV
+  api:
+    build:
+      context: .
+      # Opcional: target específico si usas multi-stage build en Dockerfile
+    environment:
+      NODE_ENV: development
+      REDIS_URL: "redis://default:${REDIS_PASS}@redis:6379/0"
+    volumes:
+      # Montar código fuente para hot-reload (cambios en vivo)
+      - ./:/usr/src/app:Z
+      - /srv/bug-uploads:/data/bug-uploads:rw,Z
+    depends_on:
+      - db # Esperar a que la DB arranque
+      - redis
+    ports:
+      - "3000:3000" # <--- AGREGA ESTO
+    networks:
+      - backend_net
+
+  # 2. El servicio NUEVO (Solo existe en este archivo)
+  db:
+    image: postgres:17-alpine
+    container_name: yv_db_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 52CHyET0EfnEZMmgvY6wH0z4e2exWKZW
+      POSTGRES_DB: yv_backend
+    ports:
+      - "5432:5432" # Para DBeaver
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data:Z
+      # Tu script mágico para clonar la estructura:
+      - ./init-schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend_net # ¡CRUCIAL! Debe estar en la misma red que definiste en el general
+
+# 3. Definir volumen local para no afectar al general si quisieras
+volumes:
+  postgres_data_dev:

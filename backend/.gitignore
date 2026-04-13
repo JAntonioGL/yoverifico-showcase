@@ -1,0 +1,60 @@
+# ========================
+# Node.js
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ========================
+# Builds y cobertura
+# ========================
+dist/
+build/
+coverage/
+.nyc_output/
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/
+*.out
+*.pid
+
+# ========================
+# Entornos
+# ========================
+.env
+env/
+!env/.env.sample
+
+
+# ========================
+# Docker
+# ========================
+.dockerignore
+docker-compose.override.yml
+*.pid
+*.seed
+*.pid.lock
+
+# ========================
+# Sistema / Editor
+# ========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+firebase-adminsdk.json
+google-service-account.json
+
+redis/redis.conf
+
+init-schema.sql

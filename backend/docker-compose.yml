@@ -1,0 +1,45 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yv_api
+    restart: unless-stopped
+    networks:
+      - backend_net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    container_name: yv_redis
+    restart: unless-stopped
+    command: >
+      sh -lc '
+        [ -f /usr/local/etc/redis/redis.conf ] && exec redis-server /usr/local/etc/redis/redis.conf
+        || exec redis-server --appendonly yes --requirepass "$REDIS_PASS"
+      '
+    environment:
+      REDIS_PASS: ${REDIS_PASS}
+    volumes:
+      - redis_data:/data
+      # Puedes comentar esta línea si no tienes el archivo
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASS}", "PING" ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks:
+      - backend_net
+
+networks:
+  backend_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+
+volumes:
+  redis_data:
