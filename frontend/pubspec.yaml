@@ -1,0 +1,106 @@
+name: yoverifico_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.5.24+71524
+
+environment:
+  sdk: '>=3.3.3 <4.0.0' # Es mejor usar un rango que una versión exacta
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^3.15.1
+  firebase_messaging: ^15.2.9
+  google_sign_in: ^7.1.1
+  http: ^1.4.0
+  shared_preferences: ^2.2.2
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.5
+  flutter_gcaptcha_v3: ^2.1.1
+  google_mobile_ads: ^6.0.0
+  sqflite: ^2.4.2
+  path_provider: ^2.1.5
+  intl: ^0.20.2
+  permission_handler: ^12.0.1
+  flutter_local_notifications: ^19.4.0
+  path: ^1.8.3
+  badges: ^3.1.2
+  google_fonts: ^6.3.0
+  lottie: ^3.3.1
+  timezone: ^0.10.1
+  app_settings: ^6.1.1
+  flutter_speed_dial: ^7.0.0
+  in_app_purchase: ^3.2.3
+  flutter_secure_storage: ^9.2.2
+  google_maps_flutter: ^2.9.0
+  geolocator: ^14.0.2
+  url_launcher: ^6.3.0
+  flutter_inappwebview: ^6.1.5 # O la última versión estable
+  #in_app_purchase_android: ^0.4.0+4
+  #flutter_inapp_purchase_plus: ^1.0.5
+  flutter_inapp_purchase: ^7.1.0
+  package_info_plus: ^8.3.1
+  flutter_image_compress: ^2.4.0
+  image_picker: ^1.2.0
+  auto_size_text: ^3.0.0
+  flutter_markdown_plus: ^1.0.5
+  share_plus: ^12.0.1
+  in_app_review: ^2.0.11
+  facebook_app_events: ^0.21.0
+  firebase_analytics: ^11.6.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0 # Actualicé a una versión más reciente
+  flutter_launcher_icons: ^0.13.1 # Movido a dev_dependencies
+  flutter_native_splash: ^2.4.0 # O la versión más reciente
+
+flutter:
+  uses-material-design: true
+  assets:
+   - assets/images/
+   - assets/data/   # <-- El guion '-' solo lleva dos espacios antes
+   - assets/animations/ 
+  # assets:
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
+
+flutter_launcher_icons:
+  # La ruta a tu ícono original, se usará para iOS y versiones viejas de Android.
+  image_path: "assets/icon/icon.png"
+  
+  # Configuración para Android
+  android: true
+  
+  # Configuración para iOS
+  ios: true
+  
+  # --- ¡Aquí está la magia! ---
+  # Descomenta y configura las siguientes líneas:
+  
+  # Define el color de fondo para el ícono adaptable.
+  # Usa un código de color hexadecimal.
+  adaptive_icon_background: "#FFFFFF" # Cámbialo por el color de fondo de tu logo
+
+  # Define la ruta a tu nueva imagen de primer plano (con fondo transparente).
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png" 
+
+flutter_native_splash:
+  # El color de fondo que quieres para tu pantalla de carga.
+  # "#FFFFFF" es blanco.
+  color: "#FFFFFF"
+
+  # La ruta a la imagen de tu logo. Puede ser la misma que usaste para el ícono.
+  # Asegúrate de que tenga un fondo transparente.
+  image: assets/icon/icon_foreground.png
+
+  # (Opcional) Si quieres un color de fondo diferente para el modo oscuro.
+  # color_dark: "#000000"
+  # image_dark: assets/icon/icon_foreground.png
+
+  # Configuración específica para Android y iOS.
+  android_12:
+    color: "#FFFFFF"
+    image: assets/icon/icon_foreground.png

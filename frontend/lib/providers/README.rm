@@ -1,0 +1,36 @@
+# 🧠 Capa de Gestión de Estado (Providers)
+
+Esta carpeta implementa la arquitectura de **State Management** de la aplicación utilizando el patrón **Provider / ChangeNotifier**. Funciona como la "Fuente Única de Verdad" (Single Source of Truth), garantizando que la interfaz de usuario sea reactiva, consistente y esté desacoplada de la lógica de servicios.
+
+## 🏗️ Arquitectura de Estado
+
+### 1. Identidad y Control de Acceso (`usuario_provider.dart`)
+* **Gestión de Sesión:** Administra el perfil del usuario activo y los tokens JWT para la comunicación segura con el backend.
+* **Feature Gating:** Centraliza los "Entitlements" o beneficios del plan actual (ej. eliminación de anuncios, límites de vehículos), permitiendo que la UI reaccione dinámicamente a cambios en la suscripción.
+
+### 2. Flota Vehicular Reactiva (`vehiculos_registrados_provider.dart`)
+* **Sincronización en Tiempo Real:** Mantiene la colección de vehículos del usuario en memoria, permitiendo actualizaciones atómicas (CRUD) inmediatas en la UI tras interactuar con la API.
+* **Optimistic Updates:** Facilita una experiencia de usuario fluida al permitir agregar o remover elementos de la lista sin requerir refrescos completos de red.
+
+### 3. Inteligencia de Alertas (`notificaciones_provider.dart`)
+* **Priorización de Mensajes:** Implementa un algoritmo que ordena las notificaciones según su criticidad (ej. contingencias ambientales > recomendaciones > alertas locales).
+* **Motor de Inferencia Local:** Genera automáticamente recordatorios de verificación basados en el estatus legal y técnico de cada vehículo registrado.
+
+### 4. Ciclo de Vida de Suscripciones (`planes_provider_v2.dart`)
+* **Smart Fetching:** Gestiona el catálogo de planes integrando lógica de "Stale-While-Revalidate" para optimizar el uso de red y la frescura de los datos.
+* **Personalización Dinámica:** Detecta planes corporativos para adaptar el catálogo mostrado, evitando redundancias en usuarios con beneficios especiales.
+
+### 5. Formularios y Datos Maestros (`catalogo_provider.dart` y `vehiculo_provider.dart`)
+* **Catálogo:** Hidrata la aplicación con datos estáticos (marcas, modelos, colores) cargados eficientemente desde archivos JSON locales.
+* **Draft Vehicular:** Actúa como un buffer temporal (Stateful Wizard) que recolecta la información del vehículo paso a paso antes de su persistencia final.
+
+### 6. Reactividad Ambiental (`contingencia_provider.dart`)
+* **Gestión de Crisis:** Administra las alertas de emergencia climática en slots temporales (Hoy/Mañana), comunicando restricciones inmediatas al motor de cálculo de circulación.
+
+---
+
+## 🛠️ Principios de Implementación
+
+* **Separación de Preocupaciones:** Los Providers actúan como mediadores entre la capa de Servicios (datos crudos) y la capa de Presentación (widgets), manteniendo la lógica de negocio fuera de la vista.
+* **Eficiencia Energética y de Datos:** Uso estratégico de banderas de carga (`isLoading`) y caché local para minimizar el impacto en el rendimiento del dispositivo.
+* **Escalabilidad:** Cada Provider está especializado en un dominio específico, evitando el antipatrón de estados globales masivos y facilitando las pruebas unitarias.
